@@ -17,6 +17,7 @@ import (
 	todotrpt "go-todo-list/module/item/transport"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +26,13 @@ import (
 )
 
 func main() {
-	dsn := "root:@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
+	mysqlConnStr, ok := os.LookupEnv("MYSQL_CONNECTION")
+
+	if !ok {
+		log.Fatalln("Missing MySQL connection string")
+	}
+
+	dsn := mysqlConnStr
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
